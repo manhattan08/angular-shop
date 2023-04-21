@@ -9,10 +9,12 @@ import {AppRoutingModule} from "./app-routing.module";
 import {HomeModule} from "./home/home.module";
 import {ErrorInterceptor} from "./core/interceptors/error.interceptor";
 import {LoadingInterceptor} from "./core/interceptors/loading.interceptor";
+import { OrderTotalsComponent } from './shated/order-totals/order-totals.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    OrderTotalsComponent,
   ],
   imports: [
     BrowserModule,
