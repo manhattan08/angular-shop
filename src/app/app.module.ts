@@ -9,7 +9,8 @@ import {AppRoutingModule} from "./app-routing.module";
 import {HomeModule} from "./home/home.module";
 import {ErrorInterceptor} from "./core/interceptors/error.interceptor";
 import {LoadingInterceptor} from "./core/interceptors/loading.interceptor";
-import { OrderTotalsComponent } from './shated/order-totals/order-totals.component';
+import {JwtInterceptor} from "./core/interceptors/jwt.interceptor";
+import {OrderTotalsComponent} from "./shared/order-totals/order-totals.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { OrderTotalsComponent } from './shated/order-totals/order-totals.compone
   ],
   providers: [
     {provide:HTTP_INTERCEPTORS,useClass:ErrorInterceptor,multi:true},
-    {provide:HTTP_INTERCEPTORS,useClass:LoadingInterceptor,multi:true}
+    {provide:HTTP_INTERCEPTORS,useClass:LoadingInterceptor,multi:true},
+    {provide:HTTP_INTERCEPTORS,useClass:JwtInterceptor,multi:true}
   ],
   bootstrap: [AppComponent]
 })

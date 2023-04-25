@@ -10,10 +10,10 @@ import {IBasketItem} from "../shared/models/basket";
 export class BasketComponent {
   constructor(public basketService:BasketService) {
   }
-  incrementQuantity(item:IBasketItem){
+  incrementItemQuantity(item:IBasketItem){
     this.basketService.addItemToBasket(item);
   }
-  removeItem(id:number,quantity:number){
-    this.basketService.removeItemFromBasket(id,quantity);
+  removeBasketItem(event:{id:number,quantity:number}){
+    this.basketService.removeItemFromBasket(event.id,event.quantity);
   }
 }

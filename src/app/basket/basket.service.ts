@@ -4,6 +4,7 @@ import {BehaviorSubject} from "rxjs";
 import {Basket, IBasketItem, IBasketTotals} from "../shared/models/basket";
 import {HttpClient} from "@angular/common/http";
 import {Product} from "../shared/models/product";
+import {DeliveryMethod} from "../shared/models/deliveryMethod";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,15 @@ export class BasketService {
   private basketSource = new BehaviorSubject<Basket | null>(null);
   basketSource$ = this.basketSource.asObservable();
   private basketTotalSource = new BehaviorSubject<IBasketTotals | null>(null)
+  basketTotalSource$ = this.basketTotalSource.asObservable();
+  shipping = 0;
 
   constructor(private http:HttpClient) { }
+
+  setShippingPrice(deliveryMethod:DeliveryMethod){
+    this.shipping = deliveryMethod.price;
+    this.calculateTotals();
+  }
 
   getBasket(id:string){
     return this.http.get<Basket>(this.baseUrl+"basket?id="+id).subscribe({
@@ -61,9 +69,7 @@ export class BasketService {
   deleteBasket(basket:Basket){
     return this.http.delete(this.baseUrl + "basket?id="+basket.id).subscribe({
       next:()=>{
-        this.basketSource.next(null)
-        this.basketTotalSource.next(null)
-        localStorage.removeItem("basket_id")
+        this.deleteLocalBasket();
       }
     })
   }
@@ -85,13 +91,19 @@ export class BasketService {
       type:item.productType
     }
   }
+
+  deleteLocalBasket(){
+    this.basketSource.next(null)
+    this.basketTotalSource.next(null)
+    localStorage.removeItem("basket_id")
+  }
+
   private calculateTotals(){
     const basket = this.getCurrentBasketValue();
     if(!basket) return;
-    const shipping = 0;
     const subtotal = basket.items.reduce((a,b) => (b.price * b.quantity) + a,0)
-    const total = subtotal + shipping;
-    this.basketTotalSource.next({shipping,total,subtotal});
+    const total = subtotal + this.shipping;
+    this.basketTotalSource.next({shipping:this.shipping,total,subtotal});
   }
   private isProduct(item:Product | IBasketItem):item is Product{
     return (item as Product).productBrand !== undefined;
